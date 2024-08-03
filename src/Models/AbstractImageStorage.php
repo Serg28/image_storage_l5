@@ -12,10 +12,7 @@ abstract class AbstractImageStorage extends Model implements
     SluggableInterface,
     URLableInterface
 {
-    use \Vis\Builder\Helpers\Traits\TranslateTrait,
-        \Vis\Builder\Helpers\Traits\SeoTrait,
-
-        CacheableTrait,
+    use CacheableTrait,
         ChangeableSchemeTrait,
         ConfigurableTrait,
         ErrorableTrait,
@@ -38,5 +35,4 @@ abstract class AbstractImageStorage extends Model implements
             $this->$columnName = $value;
         }
     }
-
 }

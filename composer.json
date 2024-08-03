@@ -20,5 +20,12 @@
     "psr-4": {
       "Vis\\ImageStorage\\": "src/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Vis\\ImageStorage\\ImageStorageServiceProvider"
+      ]
+    }
   }
 }
