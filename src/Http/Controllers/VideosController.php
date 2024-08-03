@@ -9,8 +9,8 @@ class VideosController extends AbstractImageStorageController
 
     public function doUploadPreviewImage()
     {
-        $file = Input::file('file');
-        $id   = Input::get('id');
+        $file = request()->file('file');
+        $id   = request()->get('id');
 
         $video = $this->model->find($id);
 
@@ -35,7 +35,7 @@ class VideosController extends AbstractImageStorageController
 
     public function doRemovePreviewImage()
     {
-        $id = Input::get('id');
+        $id = request()->get('id');
 
         $video = $this->model->find($id);
 

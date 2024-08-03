@@ -9,8 +9,8 @@ class TagsController extends AbstractImageStorageController
 
     public function doRelateToTags($type)
     {
-        $idTags  = Input::get('idTags', []);
-        $idArray = Input::get('idArray', []);
+        $idTags  = request()->get('idTags', []);
+        $idArray = request()->get('idArray', []);
 
         foreach ($idTags as $key => $id) {
             $tag = $this->model->find($id);

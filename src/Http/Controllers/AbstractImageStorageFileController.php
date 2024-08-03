@@ -1,6 +1,5 @@
 <?php namespace Vis\ImageStorage;
 
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
 
@@ -8,7 +7,7 @@ class AbstractImageStorageFileController extends AbstractImageStorageController
 {
     public function doUpload()
     {
-        $file = Input::file('file');
+        $file = request()->file('file');
 
         $prefix = $this->model->getConfigPrefix();
 
@@ -33,9 +32,9 @@ class AbstractImageStorageFileController extends AbstractImageStorageController
 
     public function doReplaceSingle()
     {
-        $file = Input::file('file');
-        $size = Input::get('size');
-        $id   = Input::get('id');
+        $file = request()->file('file');
+        $size = request()->get('size');
+        $id   = request()->get('id');
 
         $prefix = $this->model->getConfigPrefix();
 

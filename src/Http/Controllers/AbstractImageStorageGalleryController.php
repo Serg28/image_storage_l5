@@ -7,8 +7,8 @@ abstract class AbstractImageStorageGalleryController extends AbstractImageStorag
 {
     public function doChangeGalleryOrder()
     {
-        $idGallery = Input::get('idGallery');
-        $idArray   = Input::get('idArray', []);
+        $idGallery = request()->get('idGallery');
+        $idArray   = request()->get('idArray', []);
 
         $entity = $this->model->find($idGallery);
 
@@ -21,8 +21,8 @@ abstract class AbstractImageStorageGalleryController extends AbstractImageStorag
 
     public function doDetachToGallery()
     {
-        $idGallery = Input::get('idGallery');
-        $idRelated = Input::get('id');
+        $idGallery = request()->get('idGallery');
+        $idRelated = request()->get('id');
 
         $entity = $this->model->find($idGallery);
 
@@ -35,8 +35,8 @@ abstract class AbstractImageStorageGalleryController extends AbstractImageStorag
 
     public function doSetGalleryPreview()
     {
-        $idGallery = Input::get('idGallery');
-        $idPreview = Input::get('idPreview');
+        $idGallery = request()->get('idGallery');
+        $idPreview = request()->get('idPreview');
 
         $entity = $this->model->find($idGallery);
 
@@ -49,8 +49,8 @@ abstract class AbstractImageStorageGalleryController extends AbstractImageStorag
 
     public function doCreateGalleryWith()
     {
-        $galleryName = Input::get('galleryName');
-        $idArray     = Input::get('idArray', []);
+        $galleryName = request()->get('galleryName');
+        $idArray     = request()->get('idArray', []);
 
         $fields      = ['title' => $galleryName];
 
@@ -71,8 +71,8 @@ abstract class AbstractImageStorageGalleryController extends AbstractImageStorag
 
     public function doAddArrayToGalleries()
     {
-        $idGalleries = Input::get('idGalleries', []);
-        $idArray     = Input::get('idArray', []);
+        $idGalleries = request()->get('idGalleries', []);
+        $idArray     = request()->get('idArray', []);
 
         foreach ($idGalleries as $key => $id) {
             $entity = $this->model->find($id);
