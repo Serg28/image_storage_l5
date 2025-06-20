@@ -20,11 +20,11 @@ class ImageStorageServiceProvider extends ServiceProvider
         $this->loadViewsFrom(realpath(__DIR__ . '/resources/views'), 'image-storage');
 
         $this->publishes([
-            __DIR__ . '/published' => public_path('packages/vis/image-storage'),
+            __DIR__ . '/published' => public_path('packages/linecore/image-storage'),
         ], 'public');
 
         $this->publishes([
-            __DIR__ . '/published' => public_path('packages/vis/image-storage'),
+            __DIR__ . '/published' => public_path('packages/linecore/image-storage'),
         ], 'image-storage-public');
 
         $this->publishes([
