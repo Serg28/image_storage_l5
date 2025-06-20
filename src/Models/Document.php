@@ -1,8 +1,8 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 class Document extends AbstractImageStorageFile
 {
-    protected $table = 'vis_documents';
+    protected $table = 'linecore_documents';
     protected $configPrefix = 'document';
 
 }

@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 class VideoGalleriesController extends AbstractImageStorageGalleryController
 {

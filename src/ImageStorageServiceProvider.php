@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
@@ -14,22 +14,24 @@ class ImageStorageServiceProvider extends ServiceProvider
     
     public function boot()
     {
-        require __DIR__ . '/../vendor/autoload.php';
-
+        // Remove vendor autoload requirement as it's handled by Composer
         $this->setupRoutes($this->app->router);
         $this->loadViewsFrom(realpath(__DIR__ . '/resources/views'), 'image-storage');
 
         $this->publishes([
-            __DIR__ . '/published' => public_path('packages/vis/image-storage'),
+            __DIR__ . '/published' => public_path('packages/linecore/image-storage'),
         ], 'public');
 
         $this->publishes([
-            __DIR__ . '/published' => public_path('packages/vis/image-storage'),
+            __DIR__ . '/published' => public_path('packages/linecore/image-storage'),
         ], 'image-storage-public');
 
         $this->publishes([
             __DIR__ . '/config' => config_path('image-storage/')
         ], 'image-storage-config');
+
+        // Register migrations
+        $this->loadMigrationsFrom(__DIR__ . '/Migrations');
 
     }
 

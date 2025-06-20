@@ -1,9 +1,8 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-
-use \Vis\CurlClient\CurlClient;
+use GuzzleHttp\Client;
 
 abstract class AbstractVideoAPI extends Model implements VideoAPIInterface, ConfigurableAPIInterface
 {
@@ -13,13 +12,15 @@ abstract class AbstractVideoAPI extends Model implements VideoAPIInterface, Conf
     protected $curl;
     public $apiResponse;
 
-    public function curl()
+    public function httpClient()
     {
         if (!$this->curl) {
-            $this->curl = New CurlClient();
-            $this->curl->setRequestHeader([
-                'Accept'       => 'application/json',
-                'Content-Type' => 'application/json'
+            $this->curl = new Client([
+                'headers' => [
+                    'Accept'       => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'timeout' => 30
             ]);
         }
 

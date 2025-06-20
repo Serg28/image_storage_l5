@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Support\Facades\Schema;
 use \Illuminate\Database\Schema\Blueprint;

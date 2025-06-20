@@ -5,7 +5,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::group([
         'prefix' => 'admin/image_storage',
         'middleware' => 'auth.admin',
-        'namespace' => 'Vis\ImageStorage'
+        'namespace' => 'Linecore\ImageStorage'
     ],
         function () {
 

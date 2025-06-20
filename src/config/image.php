@@ -20,7 +20,7 @@ return array(
     /* Quality is only applied if you're encoding JPG format since PNG compression. Value range is 0-100.*/
     'quality' => 85,
 
-    /* Optimization with Vis\Builder\OptimizationImg. May greatly increase execution time when used to large sized photos. */
+    /* Image optimization using Intervention Image. May increase execution time for large photos. */
     'optimization' => true,
 
     /* use source file name as title when uploading images */

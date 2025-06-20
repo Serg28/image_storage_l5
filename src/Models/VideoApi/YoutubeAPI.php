@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 class YoutubeAPI extends AbstractVideoAPI
 {
@@ -6,20 +6,19 @@ class YoutubeAPI extends AbstractVideoAPI
 
     public function videoExists()
     {
-        $url = $this->getConfigAPIExistenceUrl();
-
-        $queryParams = [
-            'format' => 'json',
-            'url'    => $this->getWatchUrl()
-        ];
-
-        $this->curl()->setRequestUrl($url, $queryParams)->doCurlRequest();
-
-        if (!$this->curl()->isSuccessful()) {
+        try {
+            $url = $this->getConfigAPIExistenceUrl();
+            $queryParams = [
+                'format' => 'json',
+                'url'    => $this->getWatchUrl()
+            ];
+            
+            $response = $this->httpClient()->get($url, ['query' => $queryParams]);
+            
+            return $response->getStatusCode() === 200;
+        } catch (\Exception $e) {
             return false;
         }
-
-        return true;
     }
 
     public function getPreviewUrl()
@@ -35,21 +34,25 @@ class YoutubeAPI extends AbstractVideoAPI
 
     public function requestApiData()
     {
-        $queryParams = [
-            'id'    => $this->getVideoId(),
-            'part'  => $this->getConfigAPIParts(),
-            'key'   => $this->getConfigAPIKey()
-        ];
-
-        $this->curl()->setRequestUrl($this->getConfigAPIURL(), $queryParams)->doCurlRequest();
-
-        if (!$this->curl()->isSuccessful()) {
+        try {
+            $queryParams = [
+                'id'    => $this->getVideoId(),
+                'part'  => $this->getConfigAPIParts(),
+                'key'   => $this->getConfigAPIKey()
+            ];
+            
+            $response = $this->httpClient()->get($this->getConfigAPIURL(), ['query' => $queryParams]);
+            
+            if ($response->getStatusCode() !== 200) {
+                return false;
+            }
+            
+            $apiData = json_decode($response->getBody()->getContents());
+            
+            return array_shift($apiData->items);
+        } catch (\Exception $e) {
             return false;
         }
-
-        $apiData = json_decode($this->curl()->getCurlResponseBody());
-
-        return array_shift($apiData->items);
     }
 
     //todo rewrite to ??(coalesce) operator

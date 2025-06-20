@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;

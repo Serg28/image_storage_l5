@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Builder;

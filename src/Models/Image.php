@@ -1,14 +1,13 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Database\Eloquent\Builder;
-use Vis\Builder\OptmizationImg;
-use \Image as InterventionImage;
+use Intervention\Image\ImageManagerStatic as InterventionImage;
 use Exception;
 
 
 class Image extends AbstractImageStorageFile
 {
-    protected $table = 'vis_images';
+    protected $table = 'linecore_images';
     protected $configPrefix = 'image';
     protected $relatableList = ['galleries', 'tags'];
 
@@ -23,7 +22,7 @@ class Image extends AbstractImageStorageFile
 
     public function galleries()
     {
-        return $this->belongsToMany('Vis\ImageStorage\Gallery', 'vis_images2galleries', 'id_image', 'id_gallery');
+        return $this->belongsToMany('Linecore\ImageStorage\Gallery', 'linecore_images2galleries', 'id_image', 'id_gallery');
     }
 
     public function scopeFilterByGalleries(Builder $query, array $galleries = [])
@@ -81,7 +80,7 @@ class Image extends AbstractImageStorageFile
 
         $sizes = $size ? [$size => ''] : $this->getConfigSizes();
         foreach ($sizes as $size => $info) {
-            OptmizationImg::run("/" . $this->getSource($size));
+            $this->optimizeImage($this->getSource($size));
         }
 
         return true;
@@ -102,6 +101,34 @@ class Image extends AbstractImageStorageFile
             $this->exif_data = json_encode($imageData);
             $this->date_time_source = isset($imageData['EXIF']['DateTimesource']) ? $imageData['EXIF']['DateTimesource'] : "2035-01-01 00:00:00";
 
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Optimize image file
+     * 
+     * @param string $imagePath
+     * @return bool
+     */
+    private function optimizeImage($imagePath)
+    {
+        if (!$this->getConfigOptimization()) {
+            return false;
+        }
+
+        try {
+            $fullPath = public_path($imagePath);
+            if (!file_exists($fullPath)) {
+                return false;
+            }
+
+            // Basic optimization using Intervention Image
+            $image = InterventionImage::make($fullPath);
+            $image->save($fullPath, $this->getConfigQuality());
+            
             return true;
         } catch (Exception $e) {
             return false;

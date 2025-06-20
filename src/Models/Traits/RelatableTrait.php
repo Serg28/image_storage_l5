@@ -1,6 +1,6 @@
 <?php
 
-namespace Vis\ImageStorage;
+namespace Linecore\ImageStorage;
 
 trait RelatableTrait
 {
@@ -15,7 +15,7 @@ trait RelatableTrait
 
     public function tags()
     {
-        return $this->morphToMany('Vis\ImageStorage\Tag', 'entity', 'vis_tags2entities', 'id_entity', 'id_tag');
+        return $this->morphToMany('Linecore\ImageStorage\Tag', 'entity', 'linecore_tags2entities', 'id_entity', 'id_tag');
     }
 
     public function getRelatableList()

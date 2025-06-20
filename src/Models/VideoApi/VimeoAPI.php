@@ -1,4 +1,4 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Support\Facades\Cache;
 
@@ -8,19 +8,16 @@ class VimeoAPI extends AbstractVideoAPI
 
     public function videoExists()
     {
-        $url = $this->getConfigAPIExistenceUrl();
-
-        $queryParams = [
-            'url'    => $this->getWatchUrl()
-        ];
-
-        $this->curl()->setRequestUrl($url, $queryParams)->doCurlRequest();
-
-        if (!$this->curl()->isSuccessful()) {
+        try {
+            $url = $this->getConfigAPIExistenceUrl();
+            $queryParams = ['url' => $this->getWatchUrl()];
+            
+            $response = $this->httpClient()->get($url, ['query' => $queryParams]);
+            
+            return $response->getStatusCode() === 200;
+        } catch (\Exception $e) {
             return false;
         }
-
-        return true;
     }
 
     public function getPreviewUrl()
@@ -29,25 +26,24 @@ class VimeoAPI extends AbstractVideoAPI
         $cacheName = $this->getConfigPrefix() . "." . $this->getVideoId() . ".preview-id";
 
         $imageId = Cache::tags($tag)->rememberForever($cacheName, function () {
-
-            $url = $this->getConfigAPIExistenceUrl();
-
-            $queryParams = [
-                'url' => $this->getWatchUrl()
-            ];
-
-            $this->curl()->setRequestUrl($url, $queryParams)->doCurlRequest();
-
-            if (!$this->curl()->isSuccessful()) {
+            try {
+                $url = $this->getConfigAPIExistenceUrl();
+                $queryParams = ['url' => $this->getWatchUrl()];
+                
+                $response = $this->httpClient()->get($url, ['query' => $queryParams]);
+                
+                if ($response->getStatusCode() !== 200) {
+                    return false;
+                }
+                
+                $result = json_decode($response->getBody()->getContents());
+                
+                preg_match('~video/(.*?)_~', $result->thumbnail_url, $imageId);
+                
+                return $imageId[1] ?? false;
+            } catch (\Exception $e) {
                 return false;
             }
-
-            $result = json_decode($this->curl()->getCurlResponseBody());
-
-            preg_match('~video/(.*?)_~', $result->thumbnail_url, $imageId);
-
-
-            return $imageId[1];
         });
 
         $stubs = ["{id}", "{quality}"];
@@ -61,21 +57,25 @@ class VimeoAPI extends AbstractVideoAPI
 
     public function requestApiData()
     {
-        $url = $this->getConfigAPIURL();
-
-        $fields = ['fields' => $this->getConfigAPIParts()];
-
-        $this->curl()
-            ->setRequestHeader('Authorization', 'Bearer ' . $this->getConfigAPIKey())
-            ->setRequestUrl($url . $this->getVideoId(), $fields)->doCurlRequest();
-
-        if (!$this->curl()->isSuccessful()) {
+        try {
+            $url = $this->getConfigAPIURL() . $this->getVideoId();
+            $fields = ['fields' => $this->getConfigAPIParts()];
+            
+            $response = $this->httpClient()->get($url, [
+                'query' => $fields,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->getConfigAPIKey()
+                ]
+            ]);
+            
+            if ($response->getStatusCode() !== 200) {
+                return false;
+            }
+            
+            return json_decode($response->getBody()->getContents());
+        } catch (\Exception $e) {
             return false;
         }
-
-        $apiData = json_decode($this->curl()->getCurlResponseBody());
-
-        return $apiData;
     }
 
     //todo rewrite to ??(coalesce) operator

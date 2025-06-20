@@ -1,6 +1,6 @@
 <?php
 
-namespace Vis\ImageStorage;
+namespace Linecore\ImageStorage;
 
 trait URLableTrait
 {

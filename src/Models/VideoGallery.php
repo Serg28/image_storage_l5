@@ -1,10 +1,10 @@
-<?php namespace Vis\ImageStorage;
+<?php namespace Linecore\ImageStorage;
 
 use Illuminate\Database\Eloquent\Builder;
 
 class VideoGallery extends AbstractImageStorageGallery
 {
-    protected $table = 'vis_video_galleries';
+    protected $table = 'linecore_video_galleries';
     protected $configPrefix = 'video_gallery';
 
     protected $galleryRelation = 'videos';
@@ -12,7 +12,7 @@ class VideoGallery extends AbstractImageStorageGallery
     public function videos()
     {
         return $this
-            ->belongsToMany('Vis\ImageStorage\Video', 'vis_videos2video_galleries', 'id_video_gallery', 'id_video')
+            ->belongsToMany('Linecore\ImageStorage\Video', 'linecore_videos2video_galleries', 'id_video_gallery', 'id_video')
             ->orderBy('priority', 'desc')
             ->withPivot('is_preview');
     }

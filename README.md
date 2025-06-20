@@ -1,10 +1,13 @@
-# Image Storage
-Пакет-медиахранилище для Laravel 5.4 предназначенный работы с изображением, видео и документами.
+# Linecore Image Storage
 
-Разделы
-1. [Установка](#Установка)
-2. [VIS-CMS](#VIS-CMS)
-3. [Настройка конфигов](#Настройка-конфигов)
+Advanced media storage package for Laravel 10-12, designed for working with images, videos and documents.
+
+**Note**: This package is based on the original work by Artur (artur@vis-design.com). We've adapted and modernized it for current Laravel versions while maintaining full functionality.
+
+## Sections
+1. [Installation](#Installation)
+2. [Configuration](#Configuration)
+3. [Config Settings](#Config-Settings)
     1. [Конфиг изображений](#Конфиг-изображений)
     2. [Конфиг документов](#Конфиг-документов)
     3. [Конфиг видео](#Конфиг-видео)
@@ -27,27 +30,72 @@
         3. [Управление документами](#Управление-документами)
     3. [Общее управление для фотогалерей и видеогалерей](#Общее-управление-для-фотогалерей-и-видеогалерей)
 
-## Установка
+## Installation
 
-Выполняем
-```json
-    composer require "vis/image_storage_l5":"1.*"
+Install via Composer:
+```bash
+composer require linecore/image-storage-laravel
 ```
 
-Добавляем в config\app.php в массив providers
+For Laravel 10+ the service provider will be auto-discovered. For older versions, add to config/app.php:
 ```php
-    Vis\ImageStorage\ImageStorageServiceProvider::class,
+Linecore\ImageStorage\ImageStorageServiceProvider::class,
 ```
 
-Выполняем миграцию таблиц
-```json
-   php artisan migrate --path=vendor/vis/image_storage_l5/src/Migrations
+Run migrations:
+```bash
+php artisan migrate
 ```
 
-Публикуем config, js, css, images
-```json
-    php artisan vendor:publish --provider="Vis\ImageStorage\ImageStorageServiceProvider" --force
+Publish config, assets and views:
+```bash
+php artisan vendor:publish --provider="Linecore\ImageStorage\ImageStorageServiceProvider" --force
 ```
+
+## Migration from vis/artur_image_storage_l5
+
+If you're migrating from the original `vis/artur_image_storage_l5` package:
+
+1. **Update your composer.json:**
+   ```json
+   {
+       "require": {
+           "linecore/image-storage-laravel": "^2.0"
+       }
+   }
+   ```
+
+2. **Update namespace imports in your code:**
+   Replace all occurrences of:
+   ```php
+   use Vis\ImageStorage\...
+   ```
+   with:
+   ```php
+   use Linecore\ImageStorage\...
+   ```
+
+3. **Run migrations:**
+   The package includes automatic data migration from old `vis_*` tables to new `linecore_*` tables:
+   ```bash
+   php artisan migrate
+   ```
+
+4. **Update published assets:**
+   ```bash
+   php artisan vendor:publish --provider="Linecore\ImageStorage\ImageStorageServiceProvider" --tag=public --force
+   ```
+
+5. **Update configuration references:**
+   If you have any hardcoded references to `packages/vis/image-storage` in your views or code, update them to `packages/linecore/image-storage`.
+
+### Breaking Changes from Original Package
+
+- **Namespace:** `Vis\ImageStorage` → `Linecore\ImageStorage`
+- **Table names:** `vis_*` → `linecore_*` (automatic migration included)
+- **Asset path:** `packages/vis/image-storage` → `packages/linecore/image-storage`
+- **Dependencies:** Replaced `vis/curl_client_l5` with `guzzlehttp/guzzle`
+- **Image optimization:** Replaced deprecated `OptmizationImg` with `Intervention\Image`
 
 ## VIS-CMS
 В файле config/builder/admin.php в массив menu в настройки добавляем
@@ -341,20 +389,20 @@
     'api_key' => '',
 ```
 
-## Спецификация и примеры
-### Общая спецификация
-Для подключения необходимого нужно определить его вызов в начале своего класса.
+## Usage Examples
+### Basic Usage
+To use the package models, import them in your class:
 ```php
-    use Vis\ImageStorage\Gallery;
-    use Vis\ImageStorage\Image;
-    use Vis\ImageStorage\Tag;
-    use Vis\ImageStorage\VideoGallery;
-    use Vis\ImageStorage\Video;
-    use Vis\ImageStorage\Documents;
+use Linecore\ImageStorage\Gallery;
+use Linecore\ImageStorage\Image;
+use Linecore\ImageStorage\Tag;
+use Linecore\ImageStorage\VideoGallery;
+use Linecore\ImageStorage\Video;
+use Linecore\ImageStorage\Document;
 ```    
 
-Ко всем моделям можно применять стандартный принцип написания запросов, поскольку они наследуются от модели Eloquent. </br>
-Так же все модели используют трейты VIS CMS \Vis\Builder\Helpers\Traits\TranslateTrait и \Vis\Builder\Helpers\Traits\SeoTrait </br>
+All models extend Eloquent, so you can use standard Laravel query methods.
+Models include built-in traits for translation and SEO functionality.
 
 Для всех записей генерируется уникальных слаг, его значение можно получить с помощью метода
 ```php
