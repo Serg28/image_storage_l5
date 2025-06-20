@@ -72,9 +72,10 @@ return array(
             'caption' => 'Превью в ЦМС',
             'default_tab' => false,
             'modify' => array(
-                'fit' => array(160, 160, function (\Intervention\Image\Constraint $constraint) {
-                    $constraint->upsize();
-                }),
+                //'fit' => array(160, 160, function (\Intervention\Image\Constraint $constraint) {
+                //    $constraint->upsize();
+                //}),
+                'fit' => [160, 160, [Vis\ImageStorage\ImageModifiers::class, 'upsizeConstraint']],
             ),
         ),
 
