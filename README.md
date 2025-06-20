@@ -331,7 +331,7 @@
 ```    
 
 Ко всем моделям можно применять стандартный принцип написания запросов, поскольку они наследуются от модели Eloquent. </br>
-Так же все модели используют трейты VIS CMS \Vis\Builder\Helpers\Traits\TranslateTrait и \Vis\Builder\Helpers\Traits\SeoTrait </br>
+Так же все модели используют трейты \Vis\Builder\Helpers\Traits\TranslateTrait и \Vis\Builder\Helpers\Traits\SeoTrait </br>
 
 Для всех записей генерируется уникальных слаг, его значение можно получить с помощью метода
 ```php
