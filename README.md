@@ -22,13 +22,7 @@ Advanced media storage package for Laravel 10-12, designed for working with imag
     7. [Использование видеогалереи](#Использование-видеогалереи)
     8. [Использование тэгов](#Использование-тэгов)
 5. [Кэширование](#Кэширование)
-6. [Особенности управление в VIS CMS](#Особенности-управление-в-vis-cms)
-    1. [Общее управление](#Общее-управление)
-    2. [Общее управление для изображений, видео и документов](#Общее-управление-для-изображений-видео-и-документов)
-        1. [Управление изображениями](#Управление-изображениями)
-        2. [Управление видео](#Управление-видео)
-        3. [Управление документами](#Управление-документами)
-    3. [Общее управление для фотогалерей и видеогалерей](#Общее-управление-для-фотогалерей-и-видеогалерей)
+6. [Admin Interface](#admin-interface)
 
 ## Installation
 
@@ -89,6 +83,34 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
 5. **Update configuration references:**
    If you have any hardcoded references to `packages/vis/image-storage` in your views or code, update them to `packages/linecore/image-storage`.
 
+6. **Update route names in your code:**
+   If you're using the package's route names, update them:
+   ```php
+   // Old route names
+   route("vis_images_show_single", [$slug])
+   route("vis_galleries_show_single", [$slug])
+   route("vis_videos_show_single", [$slug])
+   route("vis_video_galleries_show_single", [$slug])
+   
+   // New route names
+   route("linecore_images_show_single", [$slug])
+   route("linecore_galleries_show_single", [$slug])
+   route("linecore_videos_show_single", [$slug])
+   route("linecore_video_galleries_show_single", [$slug])
+   ```
+
+7. **Update admin menu configuration:**
+   If you have admin menu configuration, update the links:
+   ```php
+   // Old links
+   '/image_storage/images'
+   '/image_storage/galleries'
+   
+   // New links (same, no change needed)
+   '/admin/image_storage/images'
+   '/admin/image_storage/galleries'
+   ```
+
 ### Breaking Changes from Original Package
 
 - **Namespace:** `Vis\ImageStorage` → `Linecore\ImageStorage`
@@ -96,89 +118,71 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
 - **Asset path:** `packages/vis/image-storage` → `packages/linecore/image-storage`
 - **Dependencies:** Replaced `vis/curl_client_l5` with `guzzlehttp/guzzle`
 - **Image optimization:** Replaced deprecated `OptmizationImg` with `Intervention\Image`
+- **Route names:** `vis_*` route names → `linecore_*` route names
 
-## VIS-CMS
-В файле config/builder/admin.php в массив menu в настройки добавляем
-```php
-    array(
-      'title' => 'Медиахранилище',
-      'icon'  => 'picture-o',
-      'check' => function() {
-          return Sentinel::hasAccess('admin.image_storage.view');
-      },
-      'submenu' => array(
-          array(
-              'title' => "Изображения",
-              'link'  => '/image_storage/images',
-              'check' => function() {
-                  return Sentinel::hasAccess('admin.image_storage.view');
-              }
-          ),
-          array(
-              'title' => "Галереи",
-              'link'  => '/image_storage/galleries',
-              'check' => function() {
-                  return Sentinel::hasAccess('admin.image_storage.view');
-              }
-          ),
-          array(
-              'title' => "Видео",
-              'link'  => '/image_storage/videos',
-              'check' => function() {
-                  return Sentinel::hasAccess('admin.image_storage.view');
-              }
-          ),
-          array(
-              'title' => "Видеогалереи",
-              'link'  => '/image_storage/video_galleries',
-              'check' => function() {
-                  return Sentinel::hasAccess('admin.image_storage.view');
-              }
-          ),
-          array(
-              'title' => "Документы",
-              'link'  => '/image_storage/documents',
-              'check' => function() {
-                  return Sentinel::hasAccess('admin.image_storage.view');
-              }
-          ),
-          array(
-              'title' => "Теги",
-              'link'  => '/image_storage/tags',
-              'check' => function() {
-                  return Sentinel::hasAccess('admin.image_storage.view');
-              }
-          ),
-      )
-    ),
-```
+## Admin Interface
 
-Добавляем права доступа в config/builder/tb-definitions/groups.php и добавляем их к группам.
+The package provides admin routes for managing media content. All admin routes are prefixed with `/admin/image_storage/` and require authentication.
+
+### Available Admin Routes:
+- `/admin/image_storage/images` - Image management
+- `/admin/image_storage/galleries` - Gallery management  
+- `/admin/image_storage/videos` - Video management
+- `/admin/image_storage/video_galleries` - Video gallery management
+- `/admin/image_storage/documents` - Document management
+- `/admin/image_storage/tags` - Tag management
+
+### Admin Menu Integration Example:
+If you're using an admin panel, you can add menu items like this:
 ```php
-    'Медиахранилище' => array(
-        'admin.image_storage.view'   => 'Просмотр',
-        'admin.image_storage.create' => 'Создание',
-        'admin.image_storage.update' => 'Редактирование',
-        'admin.image_storage.delete' => 'Удаление',
-    ),
+array(
+    'title' => 'Media Storage',
+    'icon'  => 'picture-o',
+    'submenu' => array(
+        array(
+            'title' => "Images",
+            'link'  => '/admin/image_storage/images',
+        ),
+        array(
+            'title' => "Galleries", 
+            'link'  => '/admin/image_storage/galleries',
+        ),
+        array(
+            'title' => "Videos",
+            'link'  => '/admin/image_storage/videos',
+        ),
+        array(
+            'title' => "Video Galleries",
+            'link'  => '/admin/image_storage/video_galleries',
+        ),
+        array(
+            'title' => "Documents",
+            'link'  => '/admin/image_storage/documents',
+        ),
+        array(
+            'title' => "Tags",
+            'link'  => '/admin/image_storage/tags',
+        ),
+    )
+),
 ```
 
 
 ## Настройка конфигов
 Все конфиги содержат 3 основных настройки:
 
-Настройка title указывающее на имя раздела отображаемое в VIS-CMS
+Настройка title указывающее на имя раздела отображаемое в админ-панели
 ```php
     'title' => "Галереи",
 ```
 
-Настройка per_page указывающее количество записей отображаемых на странице  в VIS-CMS
+Настройка per_page указывающее количество записей отображаемых на странице в админ-панели
 ```php
     'per_page' => 20,
 ```
 
-Настройка fields соддержащее набор полей, которые будут выводиться в форме редактирования записи. </br>
-Значения: text, textarea,checkbox, select, datetime. Определяются как и в VIS-CMS. </br>
+Настройка fields содержащее набор полей, которые будут выводиться в форме редактирования записи. </br>
+Значения: text, textarea, checkbox, select, datetime. </br>
 Поддерживается динамическое создание новых полей и табов
 ```php
     'fields' => array(
@@ -207,7 +211,7 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
     'quality' => 85,
 ```
 
-Настройка использования класса Vis\Builder\OptimizationImg для оптимизации загруженных изображений.</br>
+Настройка использования Intervention\Image для оптимизации загруженных изображений.</br>
 Значение: true\false
 ```php
     'optimization' => true,
@@ -469,7 +473,7 @@ Eloquent связь с галереями. Получает все связан�
 ```php
     public function getUrl()
     {
-        return route("vis_images_show_single", [$this->getSlug()]);
+        return route("linecore_images_show_single", [$this->getSlug()]);
     }
 ```
 
@@ -524,7 +528,7 @@ Eloquent связь с изображения. Получает все связ�
 ```php
     public function getUrl()
     {
-        return route("vis_galleries_show_single", [$this->getSlug()]);
+        return route("linecore_galleries_show_single", [$this->getSlug()]);
     }
 ```
 
@@ -597,7 +601,7 @@ Eloquent связь с изображения. Получает все связ�
 ```php
     public function getUrl()
     {
-        return route("vis_videos_show_single", [$this->getSlug()]);
+        return route("linecore_videos_show_single", [$this->getSlug()]);
     }
 ```
 
@@ -685,7 +689,7 @@ Eloquent связь с видео. Получает все связанные в
 ```php
     public function getUrl()
     {
-        return route("vis_video_galleries_show_single", [$this->getSlug()]);
+        return route("linecore_video_galleries_show_single", [$this->getSlug()]);
     }
 ```
 
@@ -726,34 +730,39 @@ Eloquent связь с видеогалереями. Получает все с�
 * image-storage.image
 * image-storage.tag
 
-## Особенности управление в VIS CMS
-### Общее управление
-Интерфейс максимально приближен к интерфейсу VIS-CMS. </br>
-В шапке каждого из разделов находится инструментальная панель с фильтами(с некоторым уникальными для разделов) и кнопкой создания новой записи, которая вызовет модальное окно создания. </br>
-В нижней части  страницы находится пагинация
+## Admin Interface Features
 
-### Общее управление для изображений, видео и документов
-При клике на уже добавленный объект вызовется модальное окно редактирования записи </br>
-Которое содержит вкладки размеров и поля указанные в соотв. конфиге. Возможно прямо управление связями конктретного изображения.</br></br>
+### General Management
+The admin interface provides comprehensive management tools for all media types.
+Each section includes:
+- Filtering and search capabilities
+- Bulk operations for multiple items
+- Create/edit forms with configurable fields
+- Pagination for large datasets
 
-При выделении области с объектами будет отображена панель множественного управления объектами.</br>
-После выделения область возможно точечное добавление\удаление объектов с помощью нажатия на них мышкой при зажатой кнопке ctrl. </br>
+### Media Management Features
+- **Image Management**: Upload, resize, optimize images with multiple size variants
+- **Gallery Management**: Organize images into galleries with preview functionality  
+- **Video Management**: Integrate with YouTube/Vimeo APIs for video metadata
+- **Document Management**: Handle file uploads with multi-language support
+- **Tag Management**: Categorize and filter media using tags
 
-#### Управление изображениями
-При клике на поле "Загрузить изображение" появится окон выбора загружаемых изображений. Поддерживается множественная загрузка изображений. </br>
-После загрузки всех изображений и созданиях их дополнительных размеров будет отправлен запрос на их оптимизацию.</br>
-Если какое-либо из сгенирированных изображений-размеров не устаривает, тогда его можно заменить в вкладке этого размера.
+### Key Features
+- Multiple file upload support
+- Automatic image optimization using Intervention Image
+- Configurable image sizes and quality settings
+- Video API integration for automatic metadata retrieval
+- Bulk operations for efficient media management
+- SEO-friendly URLs and metadata management
 
-#### Управление видео
-При создании нового видео достаточно указать видео сервис и идентификатор видео. Если видео существует - оно будет добавлено в общий список. </br>
-Поля title и description автоматически будут заполнены, если установлена соотв. настройка в конфиге. </br>
-Если изображение-превью предоставляемое видео сервисом не устаривает, тогда можно загрузить собственное в вкладке "Превью".
+## Contributing
 
-#### Управление документами
-При клике на поле "Загрузить документ" появится окон выбора загружаемых документов. Поддерживается множественная загрузка документов. </br>
-После загрузки всех документов во все дополнительные поля файлов будет установлена ссылка на исходный файл. </br>
-Если есть необходимость заменить файл для какого-либо из размеров, тогда его можно заменить в вкладке этого размера. 
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Общее управление для фотогалерей и видеогалерей
-После создания галереи и добавления изображений\видео в неё возможно управление порядком изображений\видео путем перетягивания их между собой. </br>
-Возможно установление одного из изображений\видео как превью для галереи с помощью нажатия на него мышкой при зажатой кнопке ctrl. 
+## License
+
+This package is open-sourced software licensed under the [MIT license](LICENSE).
+
+## Credits
+
+Based on the original work by Artur (artur@vis-design.com). Adapted and modernized for Laravel 10-12 compatibility. 
