@@ -77,7 +77,39 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
    }
    ```
 
-2. **Update namespace imports in your code:**
+2. **🚀 Automated Migration (Recommended):**
+   
+   Use our automated migration script to update all code references:
+   ```bash
+   # Download the migration script
+   curl -O https://raw.githubusercontent.com/Serg28/image_storage_l5/laravel11/migrate_to_linecore.sh
+   
+   # Make it executable
+   chmod +x migrate_to_linecore.sh
+   
+   # Run the migration
+   ./migrate_to_linecore.sh
+   ```
+   
+   This script automatically handles:
+   - ✅ Namespace imports (`Vis\ImageStorage` → `Linecore\ImageStorage`)
+   - ✅ Route names (`vis_*_show_single` → `linecore_*_show_single`)
+   - ✅ Asset paths (`packages/vis/` → `packages/linecore/`)
+   - ✅ Cross-platform support (Linux & macOS)
+   
+   **After running the script, verify the migration:**
+   ```bash
+   # Check for any remaining old references
+   grep -r "Vis\\ImageStorage" app/ resources/ config/
+   grep -r "packages/vis/image-storage" app/ resources/ config/
+   grep -r "vis_.*_show_single" app/ resources/ config/
+   ```
+   
+   If these commands return no results, your code migration is complete! 🎉
+   
+   **Skip to step 4** after running the script, or continue with manual migration below.
+
+3. **Manual Migration - Update namespace imports in your code:**
    Replace all occurrences of:
    ```php
    use Vis\ImageStorage\...
@@ -87,21 +119,24 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
    use Linecore\ImageStorage\...
    ```
 
-3. **Run migrations:**
+4. **Run migrations:**
    The package includes automatic data migration from old `vis_*` tables to new `linecore_*` tables:
    ```bash
    php artisan migrate
    ```
 
-4. **Update published assets:**
+5. **Update published assets:**
    ```bash
+   composer update
    php artisan vendor:publish --provider="Linecore\ImageStorage\ImageStorageServiceProvider" --tag=public --force
    ```
 
-5. **Update configuration references:**
+### Manual Migration Steps (Only if you didn't use the automated script)
+
+6. **Update configuration references:**
    If you have any hardcoded references to `packages/vis/image-storage` in your views or code, update them to `packages/linecore/image-storage`.
 
-6. **Update route names in your code:**
+7. **Update route names in your code:**
    If you're using the package's route names, update them:
    ```php
    // Old route names
@@ -117,7 +152,7 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
    route("linecore_video_galleries_show_single", [$slug])
    ```
 
-7. **Update admin menu configuration:**
+8. **Update admin menu configuration:**
    If you have admin menu configuration, update the links:
    ```php
    // Old links
