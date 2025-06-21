@@ -26,6 +26,18 @@ Advanced media storage package for Laravel 10-12, designed for working with imag
 
 ## Installation
 
+Add the repository to your `composer.json`:
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://git.linecore.com/linecore-laravel/packages/image_storage.git"
+        }
+    ]
+}
+```
+
 Install via Composer:
 ```bash
 composer require linecore/image-storage-laravel
@@ -53,6 +65,12 @@ If you're migrating from the original `vis/artur_image_storage_l5` package:
 1. **Update your composer.json:**
    ```json
    {
+       "repositories": [
+           {
+               "type": "vcs",
+               "url": "https://git.linecore.com/linecore-laravel/packages/image_storage.git"
+           }
+       ],
        "require": {
            "linecore/image-storage-laravel": "^2.0"
        }

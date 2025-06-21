@@ -1,6 +1,7 @@
 {
   "name": "linecore/image-storage-laravel",
   "description": "Advanced image, video and document storage package for Laravel",
+  "homepage": "https://git.linecore.com/linecore-laravel/packages/image_storage",
   "license": "MIT",
   "authors": [
     {
