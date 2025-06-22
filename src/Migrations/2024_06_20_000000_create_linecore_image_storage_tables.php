@@ -22,8 +22,11 @@ class CreateLinecoreImageStorageTables extends Migration
             $table->text('file_source');
             $table->text('file_alt')->nullable();
             $table->text('file_description')->nullable();
+            $table->text('description')->nullable();
             $table->text('file_exif')->nullable();
             $table->tinyInteger('is_active')->default(1);
+            $table->string('checksum')->nullable()->default(null);
+            $table->string('id_1c')->nullable()->default(null);
             $table->timestamps();
         });
 
