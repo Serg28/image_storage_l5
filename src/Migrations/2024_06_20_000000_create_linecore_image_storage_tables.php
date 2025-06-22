@@ -34,6 +34,7 @@ class CreateLinecoreImageStorageTables extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('title', 255);
+            $table->text('description')->nullable();
             $table->string('slug', 255);
             $table->timestamp('event_date');
             $table->tinyInteger('is_active')->default(1);
