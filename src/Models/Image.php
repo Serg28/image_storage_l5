@@ -80,7 +80,7 @@ class Image extends AbstractImageStorageFile
 
         $sizes = $size ? [$size => ''] : $this->getConfigSizes();
         foreach ($sizes as $size => $info) {
-            OptmizationImg::run("/" . $this->getSource($size));
+            $this->optimizeImageProcess($this->getSource($size));
         }
 
         return true;
@@ -107,4 +107,31 @@ class Image extends AbstractImageStorageFile
         }
     }
 
+    /**
+     * Optimize image file
+     *
+     * @param string $imagePath
+     * @return bool
+     */
+    private function optimizeImageProcess($imagePath)
+    {
+        if (!$this->getConfigOptimization()) {
+            return false;
+        }
+
+        try {
+            $fullPath = public_path($imagePath);
+            if (!file_exists($fullPath)) {
+                return false;
+            }
+
+            // Basic optimization using Intervention Image
+            $image = InterventionImage::make($fullPath);
+            $image->save($fullPath, $this->getConfigQuality());
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 }
