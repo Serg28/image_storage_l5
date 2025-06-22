@@ -80,7 +80,7 @@ class Image extends AbstractImageStorageFile
 
         $sizes = $size ? [$size => ''] : $this->getConfigSizes();
         foreach ($sizes as $size => $info) {
-            $this->optimizeImage($this->getSource($size));
+            OptmizationImg::run("/" . $this->getSource($size));
         }
 
         return true;
@@ -101,34 +101,6 @@ class Image extends AbstractImageStorageFile
             $this->exif_data = json_encode($imageData);
             $this->date_time_source = isset($imageData['EXIF']['DateTimesource']) ? $imageData['EXIF']['DateTimesource'] : "2035-01-01 00:00:00";
 
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Optimize image file
-     * 
-     * @param string $imagePath
-     * @return bool
-     */
-    private function optimizeImage($imagePath)
-    {
-        if (!$this->getConfigOptimization()) {
-            return false;
-        }
-
-        try {
-            $fullPath = public_path($imagePath);
-            if (!file_exists($fullPath)) {
-                return false;
-            }
-
-            // Basic optimization using Intervention Image
-            $image = InterventionImage::make($fullPath);
-            $image->save($fullPath, $this->getConfigQuality());
-            
             return true;
         } catch (Exception $e) {
             return false;
